@@ -1,26 +1,22 @@
+pragma solidity ^0.8.20;
 
- pragma solidity ^0.8.20;
+contract VulnerableVault {
+    mapping(address => uint256) public balances;
 
- contract VulnerableVault {
+    function deposit() external payable {
+        require(msg.value > 0, "Amount must be positive");
+        balances[msg.sender] += msg.value;
+    }
 
-     mapping(address => uint256) public balances;
+    function withdraw() external {
+        uint256 amount = balances[msg.sender];
 
-     function deposit() external payable {
-         require(msg.value > 0, "Amount must be positive");
-         balances[msg.sender] += msg.value;
-     }
+        require(amount > 0, "No funds");
 
-     function withdraw() external {
-         uint256 amount = balances[msg.sender];
+        (bool success,) = payable(msg.sender).call{value: amount}("");
 
-         require(amount > 0, "No funds");
+        require(success, "Transfer failed");
 
-         (bool success, ) = payable(msg.sender).call{
-             value: amount
-         }("");
-
-         require(success, "Transfer failed");
-
-         balances[msg.sender] = 0;
-     }
- }
+        balances[msg.sender] = 0;
+    }
+}

@@ -1,27 +1,22 @@
+pragma solidity ^0.8.20;
 
+contract SecureVault {
+    mapping(address => uint256) public balances;
 
- pragma solidity ^0.8.20;
+    function deposit() external payable {
+        require(msg.value > 0, "Amount must be positive");
+        balances[msg.sender] += msg.value;
+    }
 
- contract SecureVault {
+    function withdraw() external {
+        uint256 amount = balances[msg.sender];
 
-     mapping(address => uint256) public balances;
+        require(amount > 0, "No funds");
 
-     function deposit() external payable {
-         require(msg.value > 0, "Amount must be positive");
-         balances[msg.sender] += msg.value;
-     }
+        balances[msg.sender] = 0;
 
-     function withdraw() external {
-         uint256 amount = balances[msg.sender];
+        (bool success,) = payable(msg.sender).call{value: amount}("");
 
-         require(amount > 0, "No funds");
-
-         balances[msg.sender] = 0;
-
-         (bool success, ) = payable(msg.sender).call{
-             value: amount
-         }("");
-
-         require(success, "Transfer failed");
-     }
- }
+        require(success, "Transfer failed");
+    }
+}
