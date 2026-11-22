@@ -1,0 +1,54 @@
+'forge clean' running (wd: /home/mayssa/projects/EtherShield)
+'forge config --json' running
+'forge build --build-info --deny never --skip ./test/** ./script/** --force' running (wd: /home/mayssa/projects/EtherShield)
+INFO:Detectors:
+Detector: reentrancy-eth
+Reentrancy in VulnerableVault.withdraw() (src/VulnerableVault.sol#11-24):
+	External calls:
+	- (success,None) = address(msg.sender).call{value: amount}() (src/VulnerableVault.sol#16-19)
+	State variables written after the call(s):
+	- balances[msg.sender] = 0 (src/VulnerableVault.sol#22-24)
+	VulnerableVault.balances (src/VulnerableVault.sol#6) can be used in cross function reentrancies:
+	- VulnerableVault.balances (src/VulnerableVault.sol#6)
+	- VulnerableVault.deposit() (src/VulnerableVault.sol#7-10)
+	- VulnerableVault.withdraw() (src/VulnerableVault.sol#11-24)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities-1
+INFO:Detectors:
+Detector: pragma
+2 different versions of Solidity are used:
+	- Version constraint ^0.8.13 is used by:
+		-^0.8.13 (src/Counter.sol#2)
+	- Version constraint ^0.8.20 is used by:
+		-^0.8.20 (src/SecureVault.sol#2-3)
+		-^0.8.20 (src/VulnerableVault.sol#2)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#different-pragma-directives-are-used
+INFO:Detectors:
+Detector: solc-version
+Version constraint ^0.8.13 contains known severe issues (https://solidity.readthedocs.io/en/latest/bugs.html)
+	- VerbatimInvalidDeduplication
+	- FullInlinerNonExpressionSplitArgumentEvaluationOrder
+	- MissingSideEffectsOnSelectorAccess
+	- StorageWriteRemovalBeforeConditionalTermination
+	- AbiReencodingHeadOverflowWithStaticArrayCleanup
+	- DirtyBytesArrayToStorage
+	- InlineAssemblyMemorySideEffects
+	- DataLocationChangeInInternalOverride
+	- NestedCalldataArrayAbiReencodingSizeValidation.
+It is used by:
+	- ^0.8.13 (src/Counter.sol#2)
+Version constraint ^0.8.20 contains known severe issues (https://solidity.readthedocs.io/en/latest/bugs.html)
+	- VerbatimInvalidDeduplication
+	- FullInlinerNonExpressionSplitArgumentEvaluationOrder
+	- MissingSideEffectsOnSelectorAccess.
+It is used by:
+	- ^0.8.20 (src/SecureVault.sol#2-3)
+	- ^0.8.20 (src/VulnerableVault.sol#2)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#incorrect-versions-of-solidity
+INFO:Detectors:
+Detector: low-level-calls
+Low level call in SecureVault.withdraw() (src/SecureVault.sol#12-25):
+	- (success,None) = address(msg.sender).call{value: amount}() (src/SecureVault.sol#19-22)
+Low level call in VulnerableVault.withdraw() (src/VulnerableVault.sol#11-24):
+	- (success,None) = address(msg.sender).call{value: amount}() (src/VulnerableVault.sol#16-19)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#low-level-calls
+INFO:Slither:. analyzed (3 contracts with 102 detectors), 6 result(s) found
